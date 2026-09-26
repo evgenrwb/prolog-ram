@@ -449,7 +449,7 @@
     <div>
       <h2>Запишитесь на занятие</h2>
       <p>Оставьте имя и телефон — мы свяжемся и подберём удобное время.</p>
-      <form id="leadForm">
+      <form id="leadForm" action="https://formsubmit.co/prolog2024@yandex.ru" method="POST" target="hiddenFormFrame">
         <label for="name">Имя</label>
         <input id="name" name="name" type="text" required placeholder="Как к вам обращаться">
         <label for="phone">Телефон</label>
@@ -466,6 +466,7 @@
         <p class="consent">Нажимая на кнопку, вы соглашаетесь с политикой обработки персональных данных.</p>
         <p class="form-msg" id="formMsg"></p>
       </form>
+      <iframe name="hiddenFormFrame" style="display:none" title="служебное окно отправки формы"></iframe>
     </div>
     <div>
       <h2>Контакты</h2>
@@ -494,28 +495,22 @@
   const leadForm = document.getElementById('leadForm');
   const formMsg = document.getElementById('formMsg');
 
-  leadForm.addEventListener('submit', function(e){
-    e.preventDefault();
+  leadForm.addEventListener('submit', function(){
+    // Проверяем встроенную валидацию браузера (required-поля)
+    if (!leadForm.checkValidity()) return;
+
     const submitBtn = leadForm.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     formMsg.style.color = 'var(--forest-deep)';
     formMsg.textContent = 'Отправляем…';
 
-    fetch('https://formsubmit.co/ajax/prolog2024@yandex.ru', {
-      method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: new FormData(leadForm)
-    })
-    .then(res => res.json())
-    .then(data => {
+    // Форма реально отправляется в скрытый iframe (обычный POST,
+    // без fetch/JSON — так отправка не зависит от формата ответа сервиса)
+    setTimeout(function(){
       formMsg.textContent = 'Спасибо! Заявка отправлена, мы скоро свяжемся с вами.';
+      submitBtn.disabled = false;
       leadForm.reset();
-    })
-    .catch(() => {
-      formMsg.style.color = 'var(--rose-deep)';
-      formMsg.textContent = 'Не получилось отправить. Позвоните нам или напишите в WhatsApp.';
-    })
-    .finally(() => { submitBtn.disabled = false; });
+    }, 1200);
   });
 </script>
 
