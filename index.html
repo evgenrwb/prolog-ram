@@ -571,6 +571,13 @@
 </footer>
 
 <script>
+  var navToggle = document.getElementById('navToggle');
+  document.querySelectorAll('.nav-links a').forEach(function(link){
+    link.addEventListener('click', function(){
+      if (navToggle) navToggle.checked = false;
+    });
+  });
+
   const leadForm = document.getElementById('leadForm');
   const formMsg = document.getElementById('formMsg');
 
